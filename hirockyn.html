@@ -1,0 +1,382 @@
+<title>HirockyN 一口馬主</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: 出馬表（レーシングカード）の文法 — 太い見出し帯、等幅の数字、芝/ダートの色分け。1カラムの縦スクロール、幅 1080px 上限 */
+:root{
+  --paper:#f4f6f1;
+  --surface:#ffffff;
+  --ink:#18211c;
+  --muted:#5b665f;
+  --line:#d5dbd3;
+  --turf:#1e5b3a;
+  --turf-soft:#e3eee6;
+  --dirt:#a8783f;
+  --dirt-soft:#f3e9dc;
+  --brand:#22306e;
+  --brand-2:#e9c43a;
+  --win:#b8860b;
+  --f-display:"Dela Gothic One","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+  --f-data:"JetBrains Mono",ui-monospace,"Consolas",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0f1612;--surface:#17201b;--ink:#e8eee9;--muted:#9aa79f;--line:#2b3830;
+    --turf:#6fc493;--turf-soft:#1b2e23;--dirt:#d9a86a;--dirt-soft:#2c2419;
+    --brand:#8f9ff0;--brand-2:#f0cf55;--win:#e6b84a;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0f1612;--surface:#17201b;--ink:#e8eee9;--muted:#9aa79f;--line:#2b3830;
+  --turf:#6fc493;--turf-soft:#1b2e23;--dirt:#d9a86a;--dirt-soft:#2c2419;
+  --brand:#8f9ff0;--brand-2:#f0cf55;--win:#e6b84a;
+}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.8}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--brand-2);outline-offset:2px;border-radius:2px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.num{font-family:var(--f-data);font-variant-numeric:tabular-nums}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px;flex-wrap:wrap}
+.brand{font-family:var(--f-display);font-size:20px;letter-spacing:.02em;text-decoration:none;display:flex;align-items:center;gap:10px}
+.top nav{display:flex;gap:4px 18px;flex-wrap:wrap;font-size:14px}
+.top nav a{text-decoration:none;color:var(--muted)}
+.top nav a:hover{color:var(--ink)}
+
+.notice{background:var(--turf-soft);color:var(--ink);font-size:13px}
+.notice .wrap{padding-block:8px}
+
+/* hero */
+.hero{padding-block:56px 40px}
+.hero-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:end}
+.eyebrow{font-size:12px;letter-spacing:.18em;color:var(--turf);font-weight:700}
+.hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(40px,7vw,76px);line-height:1.1;margin-top:10px}
+.hero h1 small{display:block;font-size:.36em;margin-top:14px;font-family:var(--f-body);font-weight:700;letter-spacing:.04em}
+.hero p.lead{max-width:34em;color:var(--muted);margin:18px 0 0}
+
+.ages{margin:0;background:var(--surface);border:1px solid var(--line);padding:16px 18px}
+.ages figcaption{font-size:12px;color:var(--muted);letter-spacing:.1em;margin-bottom:10px}
+.ages ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:end;height:130px}
+.ages li{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.ages .bar{width:100%;max-width:40px;background:var(--brand)}
+.ages .n{font-family:var(--f-data);font-weight:700;font-size:14px}
+.ages .y{font-size:12px;color:var(--muted)}
+
+.record{display:grid;grid-template-columns:repeat(4,1fr);border:2px solid var(--ink);margin-top:36px;background:var(--surface)}
+.record div{padding:14px 16px;border-right:1px solid var(--line)}
+.record div:last-child{border-right:0}
+.record dt{font-size:12px;color:var(--muted);letter-spacing:.1em}
+.record dd{margin:2px 0 0;font-family:var(--f-data);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.record dd span{font-size:13px;color:var(--muted);font-weight:500;margin-left:4px}
+.record-note{font-size:12px;color:var(--muted);margin:8px 0 0}
+
+section{padding-block:28px}
+.band{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:4px solid var(--ink);padding-top:10px;margin-bottom:20px}
+.band h2{font-family:var(--f-display);font-weight:400;font-size:26px}
+.band .sub{font-size:13px;color:var(--muted)}
+
+/* next race */
+.race{background:var(--surface);border:1px solid var(--line);display:grid;grid-template-columns:auto 1fr auto;align-items:stretch}
+.race .rno{background:var(--turf);color:var(--paper);font-family:var(--f-display);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 22px;text-align:center;line-height:1.2}
+.race .rno b{font-size:34px;font-weight:400}
+.race .rno span{font-size:12px;font-family:var(--f-body)}
+.race .body{padding:16px 20px}
+.race h3{font-size:20px}
+.race .meta{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--muted);font-size:13px;margin-top:4px}
+.race .entry{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.race .when{padding:16px 20px;border-left:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;text-align:right}
+.race .when .num{font-size:22px;font-weight:700}
+.race .when small{color:var(--muted)}
+.tag{font-size:12px;font-weight:700;padding:1px 8px;border:1px solid var(--turf);color:var(--turf)}
+
+.surf{font-size:12px;font-weight:700;padding:1px 8px;border-radius:2px}
+.surf.turf{background:var(--turf-soft);color:var(--turf)}
+.surf.dirt{background:var(--dirt-soft);color:var(--dirt)}
+
+/* horses */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filters button{font:inherit;font-size:13px;padding:4px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;border-radius:999px}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.filters button .c{font-family:var(--f-data);margin-left:4px;opacity:.7}
+.horses{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.horse{background:var(--surface);border:1px solid var(--line);padding:18px 20px;display:grid;gap:10px;align-content:start}
+.horse header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.horse h3{font-size:21px;line-height:1.3}
+.horse h3 a{text-decoration:none}
+.horse h3 a:hover{text-decoration:underline}
+.horse .sex{font-size:13px;color:var(--muted);font-weight:500;margin-left:6px}
+.status{font-size:12px;font-weight:700;padding:2px 10px;border:1px solid currentColor;white-space:nowrap}
+.status.active{color:var(--turf)}
+.status.debut{color:var(--brand)}
+.status.yearling{color:var(--dirt)}
+.status.retired{color:var(--muted)}
+.ped{font-size:14px}
+.ped b{font-weight:700}
+.ped .x{color:var(--muted);margin-inline:6px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px dashed var(--line);padding-top:10px;margin:0}
+.facts dt{font-size:11px;color:var(--muted);letter-spacing:.08em}
+.facts dd{margin:0;font-size:14px}
+.horse .note{font-size:14px;color:var(--muted);margin:0}
+
+/* results */
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:14px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:.08em;background:var(--paper)}
+tr:last-child td{border-bottom:0}
+td.pos{font-family:var(--f-data);font-weight:700;font-size:16px;text-align:center}
+td.pos.p1{color:var(--win)}
+td.r{text-align:right}
+
+/* topics */
+.topics{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.topics article{border-top:1px solid var(--ink);padding-top:12px}
+.topics time{font-size:12px;color:var(--muted)}
+.topics h3{font-size:17px;margin:4px 0 6px;line-height:1.5}
+.topics p{margin:0;font-size:14px;color:var(--muted)}
+
+/* profile */
+.profile{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.profile p{margin:0 0 12px;max-width:34em}
+.profile dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 20px;font-size:14px}
+.profile dt{color:var(--muted)}
+.profile dd{margin:0}
+
+footer{border-top:4px solid var(--ink);margin-top:32px}
+footer .wrap{padding-block:20px 40px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+
+@media (max-width:760px){
+  .hero{padding-block:36px 24px}
+  .hero-grid{grid-template-columns:1fr;gap:24px}
+  .record{grid-template-columns:repeat(2,1fr)}
+  .record div:nth-child(2){border-right:0}
+  .record div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .horses,.topics,.profile{grid-template-columns:1fr}
+  .race{grid-template-columns:1fr}
+  .race .rno{flex-direction:row;gap:10px;justify-content:flex-start;padding:10px 20px}
+  .race .rno b{font-size:24px}
+  .race .when{border-left:0;border-top:1px solid var(--line);text-align:left;flex-direction:row;gap:12px;align-items:baseline}
+}
+@media (prefers-reduced-motion:no-preference){
+  .horse{transition:transform .2s ease}
+  .horse:hover{transform:translateY(-2px)}
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="22" height="22" fill="var(--brand)"/><path d="M0 0 L8 0 L22 14 L22 22 L14 22 L0 8 Z" fill="var(--brand-2)"/></svg>
+      HirockyN
+    </a>
+    <nav aria-label="ページ内">
+      <a href="#next">次走予定</a>
+      <a href="#horses">出資馬</a>
+      <a href="#results">最近の成績</a>
+      <a href="#topics">トピックス</a>
+      <a href="#profile">プロフィール</a>
+    </nav>
+  </div>
+</header>
+
+<div class="notice"><div class="wrap">一口馬主DB「<a href="https://www.umadb.com/s/Lrv7H9ekQYe" target="_blank" rel="noopener">ひとくちヒロッキーさんのMy馬公開ページ</a>」の 2026年10月11日時点のデータをもとに掲載しています。</div></div>
+
+<main id="top">
+  <div class="wrap">
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">ひとくちヒロッキーの出資馬</div>
+          <h1 id="hero-title">HirockyN<small>一口の夢を、ゴール板まで。</small></h1>
+          <p class="lead">ロードサラブレッドオーナーズ、シルクホースクラブ、インゼルサラブレッドクラブで一口出資している16頭の近況とレース結果をまとめたページです。</p>
+        </div>
+        <figure class="ages">
+          <figcaption>世代別の出資頭数</figcaption>
+          <ol>
+            <li><span class="n">1</span><span class="bar" style="height:16%"></span><span class="y">5歳</span></li>
+            <li><span class="n">3</span><span class="bar" style="height:40%"></span><span class="y">4歳</span></li>
+            <li><span class="n">3</span><span class="bar" style="height:40%"></span><span class="y">3歳</span></li>
+            <li><span class="n">6</span><span class="bar" style="height:80%"></span><span class="y">2歳</span></li>
+            <li><span class="n">3</span><span class="bar" style="height:40%"></span><span class="y">1歳</span></li>
+          </ol>
+        </figure>
+      </div>
+
+      <dl class="record" aria-label="出資馬の中央通算成績">
+        <div><dt>出資頭数</dt><dd>16<span>頭</span></dd></div>
+        <div><dt>出資馬 通算成績</dt><dd>11-12-7-51</dd></div>
+        <div><dt>勝率</dt><dd>13.6<span>%</span></dd></div>
+        <div><dt>平均募集価格</dt><dd>3,800<span>万円</span></dd></div>
+      </dl>
+      <p class="record-note">通算成績は出走歴のある9頭の合計（81戦）。平均募集価格は一口馬主DBの「現役出資馬平均募集価格」です。</p>
+    </section>
+
+    <section id="next" aria-labelledby="next-title">
+      <div class="band"><h2 id="next-title">次走予定</h2><span class="sub">出走確定分</span></div>
+      <article class="race">
+        <div class="rno"><b>12R</b><span>京都</span></div>
+        <div class="body">
+          <h3>3歳以上1勝クラス</h3>
+          <div class="meta"><span class="tag">出走確定</span><span>ロードサラブレッドオーナーズ</span></div>
+          <div class="entry"><b>メリフルアス</b><span style="color:var(--muted)">牝3・栗東 小栗実厩舎</span></div>
+        </div>
+        <div class="when"><span class="num">10/12</span><small>（月・祝）</small></div>
+      </article>
+    </section>
+
+    <section id="horses" aria-labelledby="horses-title">
+      <div class="band"><h2 id="horses-title">出資馬</h2><span class="sub">成績は 1着-2着-3着-着外（中央）</span></div>
+      <div class="filters" role="group" aria-label="状態で絞り込む">
+        <button type="button" id="f-all" data-f="all" aria-pressed="true">すべて</button>
+        <button type="button" id="f-active" data-f="active" aria-pressed="false">現役</button>
+        <button type="button" id="f-debut" data-f="debut" aria-pressed="false">デビュー前</button>
+        <button type="button" id="f-yearling" data-f="yearling" aria-pressed="false">1歳</button>
+        <button type="button" id="f-retired" data-f="retired" aria-pressed="false">抹消</button>
+      </div>
+      <div class="horses" id="horse-list"></div>
+    </section>
+
+    <section id="results" aria-labelledby="results-title">
+      <div class="band"><h2 id="results-title">最近の成績</h2><span class="sub">2026年7月下旬以降</span></div>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>日付</th><th>開催</th><th>レース</th><th>コース</th><th>馬名</th><th style="text-align:right">人気</th><th style="text-align:center">着順</th></tr></thead>
+          <tbody>
+            <tr><td class="num">2026/10/04</td><td>京都</td><td>3歳以上1勝クラス</td><td><span class="surf turf">芝</span> <span class="num">1200m</span></td><td>ソリスディエス</td><td class="r num">13</td><td class="pos">9</td></tr>
+            <tr><td class="num">2026/09/06</td><td>札幌</td><td>3歳以上1勝クラス</td><td><span class="surf dirt">ダ</span> <span class="num">1000m</span></td><td>ロードヴィゴラス</td><td class="r num">3</td><td class="pos p1">1</td></tr>
+            <tr><td class="num">2026/09/05</td><td>札幌</td><td>3歳以上1勝クラス</td><td><span class="surf dirt">ダ</span> <span class="num">1700m</span></td><td>ブランヴァンダイク</td><td class="r num">10</td><td class="pos">11</td></tr>
+            <tr><td class="num">2026/08/23</td><td>札幌</td><td>3歳以上1勝クラス</td><td><span class="surf turf">芝</span> <span class="num">1800m</span></td><td>ブランヴァンダイク</td><td class="r num">7</td><td class="pos">8</td></tr>
+            <tr><td class="num">2026/08/15</td><td>札幌</td><td>知床特別（2勝クラス）</td><td><span class="surf turf">芝</span> <span class="num">1200m</span></td><td>ハリウッドメモリー</td><td class="r num">1</td><td class="pos p1">1</td></tr>
+            <tr><td class="num">2026/08/02</td><td>新潟</td><td>アイビスサマーダッシュ（G3）</td><td><span class="surf turf">芝</span> <span class="num">1000m</span></td><td>ロードトレイル</td><td class="r num">14</td><td class="pos">2</td></tr>
+            <tr><td class="num">2026/07/26</td><td>札幌</td><td>2歳未勝利</td><td><span class="surf dirt">ダ</span> <span class="num">1000m</span></td><td>クラウスーラ</td><td class="r num">1</td><td class="pos p1">1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="topics" aria-labelledby="topics-title">
+      <div class="band"><h2 id="topics-title">トピックス</h2><span class="sub">2026年の主な成績</span></div>
+      <div class="topics">
+        <article>
+          <time datetime="2026-08-02">2026.08.02　新潟</time>
+          <h3>ロードトレイル、アイビスサマーダッシュ（G3）で2着</h3>
+          <p>14番人気から千直の重賞で2着に入りました。通算26戦3勝、本賞金は6,711万円です。</p>
+        </article>
+        <article>
+          <time datetime="2026-08-15">2026.08.15　札幌</time>
+          <h3>ハリウッドメモリー、知床特別を1番人気で勝利</h3>
+          <p>芝1200mの2勝クラスを勝ち、通算3勝目。18戦3勝、2着は5回です。</p>
+        </article>
+        <article>
+          <time datetime="2026-09-06">2026.09.06　札幌</time>
+          <h3>ロードヴィゴラス、ダート1000mで2勝目</h3>
+          <p>新馬勝ち以来の勝利で1勝クラスを突破。2歳時にはもみじステークス（OP）にも出走しました。</p>
+        </article>
+        <article>
+          <time datetime="2026-07-26">2026.07.26　札幌</time>
+          <h3>2歳馬クラウスーラ、3戦目で初勝利</h3>
+          <p>新馬戦、未勝利戦と2着が続いたあと、3戦連続の1番人気に応えて勝ち上がりました。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="profile" aria-labelledby="profile-title">
+      <div class="band"><h2 id="profile-title">プロフィール</h2></div>
+      <div class="profile">
+        <div>
+          <p>ひとくちヒロッキー（HirockyN）です。クラブ法人の一口出資で、1歳の募集馬から5歳の古馬まで16頭を応援しています。</p>
+          <p>出資馬の詳しいデータは一口馬主DBの公開ページで確認できます。</p>
+        </div>
+        <dl>
+          <dt>出資クラブ</dt><dd>ロードサラブレッドオーナーズ、シルクホースクラブ、インゼルサラブレッドクラブ ほか</dd>
+          <dt>出資頭数</dt><dd class="num">16頭</dd>
+          <dt>公開ページ</dt><dd><a href="https://www.umadb.com/s/Lrv7H9ekQYe" target="_blank" rel="noopener">一口馬主DB My馬公開ページ</a></dd>
+          <dt>連絡先</dt><dd>hirockyn@glimvia.com</dd>
+        </dl>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 HirockyN</span>
+    <span>当サイトは個人の記録です。各クラブ・JRA とは関係ありません。</span>
+  </div>
+</footer>
+
+<script>
+const U = id => `https://www.umadb.com/uma/${id}/`;
+const HORSES = [
+  {name:"ロードトレイル", sex:"牡5", sire:"ロードカナロア", dam:"パラダイスリッジ", bms:"ディープインパクト", trainer:"栗東 藤岡健一", club:"ロード", price:"3,000万円", rec:"3-3-2-18", status:"active", note:"直近は8/2 アイビスサマーダッシュ（G3）2着。本賞金6,711万円。", url:U("au33338")},
+  {name:"ソリスディエス", sex:"牡4", sire:"キタサンブラック", dam:"プリュス", bms:"ヴィクトワールピサ", trainer:"栗東 小崎憲", club:"インゼル", price:"7,100万円", rec:"0-0-0-5", status:"active", note:"直近は10/4 京都・3歳以上1勝クラス（芝1200m）9着。", url:U("au34615")},
+  {name:"ロードステイタス", sex:"牡4", sire:"ロードカナロア", dam:"メイズオブオナー", bms:"ハーツクライ", trainer:"栗東 四位洋文", club:"ロード", price:"3,000万円", rec:"0-0-1-6", status:"retired", note:"中央競馬の登録を抹消。最終戦は2025/7/27 札幌・3歳未勝利6着。", url:U("au35624")},
+  {name:"ハリウッドメモリー", sex:"牝4", sire:"ロードカナロア", dam:"スピニングワイルドキャット", bms:"Hard Spun", trainer:"栗東 長谷川浩大", club:"ロード", price:"4,500万円", rec:"3-5-1-9", status:"active", note:"8/15 札幌・知床特別（2勝クラス）を1番人気で勝利。", url:U("au35627")},
+  {name:"ロードヴィゴラス", sex:"牡3", sire:"ダノンプレミアム", dam:"ゼスト", bms:"Tapit", trainer:"栗東 四位洋文", club:"ロード", price:"2,800万円", rec:"2-0-0-4", status:"active", note:"命名馬。9/6 札幌・3歳以上1勝クラス（ダ1000m）で2勝目。", url:U("au37043")},
+  {name:"ブランヴァンダイク", sex:"牡3", sire:"エピファネイア", dam:"ブランノワール", bms:"ロードカナロア", trainer:"栗東 辻野泰之", club:"シルク", price:"5,000万円", rec:"1-1-0-5", status:"active", note:"6/14 函館・3歳未勝利で初勝利。直近は9/5 札幌11着。", url:U("au36186")},
+  {name:"メリフルアス", sex:"牝3", sire:"ジャスタウェイ", dam:"ポプラ", bms:"Frankel", trainer:"栗東 小栗実", club:"ロード", price:"2,500万円", rec:"1-1-3-2", status:"active", note:"10/12 京都12R・3歳以上1勝クラスに出走確定。", url:U("au37050")},
+  {name:"クリアストライク", sex:"牡2", sire:"Mehmas", dam:"Clearwing", bms:"Anjaal", trainer:"栗東 田中克典", club:"シルク", price:"3,500万円", rec:"0-0-0-2", status:"active", note:"函館の新馬戦4着、未勝利戦9着。海外産。", url:U("au37725")},
+  {name:"クラウスーラ", sex:"牝2", sire:"ニューイヤーズデイ", dam:"カーテンコール", bms:"スクリーンヒーロー", trainer:"栗東 小栗実", club:"ロード", price:"1,800万円", rec:"1-2-0-0", status:"active", note:"7/26 札幌・2歳未勝利（ダ1000m）で初勝利。", url:U("au38020")},
+  {name:"オーバーアゲイン", sex:"牝2", sire:"キタサンブラック", dam:"ゼスト", bms:"Tapit", trainer:"栗東 武英智", club:"ロード", price:"3,800万円", rec:"0-0-0-0", status:"debut", note:"未出走。ロードヴィゴラスの半妹。", url:U("au37997")},
+  {name:"ミスティックベール", sex:"牝2", sire:"コントレイル", dam:"イトワズマジック", bms:"War Front", trainer:"栗東 中内田充正", club:"ロード", price:"4,800万円", rec:"0-0-0-0", status:"debut", note:"未出走。", url:U("au37999")},
+  {name:"パラダイスリッジの2024", sex:"2歳", dam:"パラダイスリッジ", club:"ロード", status:"debut", note:"募集時名で掲載。ロードトレイルと同じ母です。"},
+  {name:"フラーレンの2024", sex:"2歳", dam:"フラーレン", status:"debut", note:"募集時名で掲載。"},
+  {name:"ホットンヘクティックの2025", sex:"1歳", dam:"ホットンヘクティック", club:"シルク", status:"yearling", note:"募集時名で掲載。"},
+  {name:"ココニアルの2025", sex:"1歳", dam:"ココニアル", status:"yearling", note:"募集時名で掲載。"},
+  {name:"スイの2025", sex:"1歳", dam:"スイ", club:"シルク", status:"yearling", note:"募集時名で掲載。"}
+];
+const STATUS = {active:"現役", debut:"デビュー前", yearling:"1歳", retired:"抹消"};
+const CLUB = {"ロード":"ロードサラブレッドオーナーズ","シルク":"シルクホースクラブ","インゼル":"インゼルサラブレッドクラブ"};
+
+function card(h){
+  const el = document.createElement("article");
+  el.className = "horse";
+  const title = h.url ? `<a href="${h.url}" target="_blank" rel="noopener">${h.name}</a>` : h.name;
+  const ped = h.sire
+    ? `父 <b>${h.sire}</b><span class="x">×</span>母 <b>${h.dam}</b><span class="x">／</span>母父 ${h.bms}`
+    : `母 <b>${h.dam}</b>`;
+  const facts = h.sire ? `
+      <dl class="facts">
+        <div><dt>厩舎</dt><dd>${h.trainer}</dd></div>
+        <div><dt>募集価格</dt><dd class="num">${h.price}</dd></div>
+        <div><dt>成績</dt><dd class="num">${h.rec}</dd></div>
+      </dl>` : "";
+  el.innerHTML = `
+      <header>
+        <h3>${title}<span class="sex">${h.sex}</span></h3>
+        <span class="status ${h.status}">${STATUS[h.status]}</span>
+      </header>
+      <div class="ped">${ped}</div>
+      ${h.club ? `<div class="note">${CLUB[h.club]}</div>` : ""}
+      ${facts}
+      <p class="note">${h.note}</p>`;
+  return el;
+}
+
+function render(filter){
+  const list = document.getElementById("horse-list");
+  list.innerHTML = "";
+  HORSES.filter(h => filter === "all" || h.status === filter).forEach(h => list.appendChild(card(h)));
+}
+
+document.querySelectorAll(".filters button").forEach(btn => {
+  const f = btn.dataset.f;
+  const n = f === "all" ? HORSES.length : HORSES.filter(h => h.status === f).length;
+  btn.insertAdjacentHTML("beforeend", `<span class="c">${n}</span>`);
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filters button").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+    render(f);
+  });
+});
+render("all");
+</script>
