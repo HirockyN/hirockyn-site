@@ -2,6 +2,8 @@
 
 ひとくちヒロッキー（HirockyN）が一口出資している競走馬の近況とレース結果をまとめた、1ページの個人サイトです。
 
+公開URL: https://hirockyn.github.io/hirockyn-site/
+
 ## 概要
 
 ロードサラブレッドオーナーズ、シルクホースクラブ、インゼルサラブレッドクラブで出資している16頭（1歳〜5歳）を掲載しています。掲載データは一口馬主DB「[ひとくちヒロッキーさんのMy馬公開ページ](https://www.umadb.com/s/Lrv7H9ekQYe)」の2026年10月11日時点のものです。
@@ -15,22 +17,22 @@
 - **トピックス** — 2026年の主な成績
 - **プロフィール** — 出資クラブと連絡先
 
-ビルドは不要です。HTML・CSS・JavaScriptはすべて `hirockyn.html` の1ファイルにまとまっています。フォントはGoogle Fontsから読み込み、ライト／ダークの両テーマに対応しています。
+ビルドは不要です。HTML・CSS・JavaScriptはすべて `index.html` の1ファイルにまとまっています。フォントはGoogle Fontsから読み込み、ライト／ダークの両テーマに対応しています。
 
 ## ブラウザで開く
 
 1. このリポジトリをクローンするか、ダウンロードします。
-2. `hirockyn.html` をブラウザで開きます。次のどれでも開けます。
-   - エクスプローラー（macOSではFinder）で `hirockyn.html` をダブルクリックする
-   - ブラウザのウィンドウに `hirockyn.html` をドラッグ＆ドロップする
+2. `index.html` をブラウザで開きます。次のどれでも開けます。
+   - エクスプローラー（macOSではFinder）で `index.html` をダブルクリックする
+   - ブラウザのウィンドウに `index.html` をドラッグ＆ドロップする
    - コマンドから開く
      ```sh
      # Windows
-     start hirockyn.html
+     start index.html
      # macOS
-     open hirockyn.html
+     open index.html
      # Linux
-     xdg-open hirockyn.html
+     xdg-open index.html
      ```
 
 ローカルサーバーは不要です。ただし、Google Fontsを読み込むためインターネットに接続しておくと、意図したフォントで表示されます（オフラインでは代替フォントで表示されます）。
